@@ -500,7 +500,13 @@
             // Unless options.singleField is set, each tag has a hidden input field inline.
             if (!this.options.singleField) {
                 var escapedValue = label.html();
-                var html = '<input type="hidden" value="'+ escapedValue + '" name="' + this.options.fieldName.replace('{}', index);
+                var html = '<input type="hidden" value="'+ escapedValue;
+
+                if (typeof index == 'undefined') {
+                  var index = '';
+                }
+
+                html += '" name="' + this.options.fieldName.replace('{}', index);
                 if (typeof this.options.fieldId != 'undefined' && this.options.fieldId.length > 0) {
                   html += '" id="' + this.options.fieldId.replace('{}', index);
                 }
