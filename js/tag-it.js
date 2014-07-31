@@ -503,7 +503,7 @@
                 var html = '<input type="hidden" value="'+ escapedValue;
 
                 if (typeof index == 'undefined') {
-                  var index = '';
+                  var index = $('.tagit-hidden-field').length-1;
                 }
 
                 html += '" name="' + this.options.fieldName.replace('{}', index);
