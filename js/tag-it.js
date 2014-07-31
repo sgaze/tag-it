@@ -30,7 +30,12 @@
         options: {
             allowDuplicates   : false,
             caseSensitive     : true,
-            fieldName         : 'tags',
+
+            // If {} pattern is present, it will be replaced by zero based field index
+            fieldName         : 'tags_{}',
+            // If fieldId is not undefined or empty, id attribute will be added
+            fieldId           : 'tagId_{}',
+
             placeholderText   : null,   // Sets `placeholder` attr on input field.
             readOnly          : false,  // Disables editing.
             removeConfirmation: false,  // Require confirmation to remove tags.
@@ -212,9 +217,9 @@
 
             // Add existing tags from the list, if any.
             if (!addedExistingFromSingleFieldNode) {
-                this.tagList.children('li').each(function() {
+                this.tagList.children('li').each(function(index) {
                     if (!$(this).hasClass('tagit-new')) {
-                        that.createTag($(this).text(), $(this).attr('class'), true);
+                        that.createTag($(this).text(), $(this).attr('class'), true, index);
                         $(this).remove();
                     }
                 });
@@ -436,7 +441,7 @@
             return Boolean($.effects && ($.effects[name] || ($.effects.effect && $.effects.effect[name])));
         },
 
-        createTag: function(value, additionalClass, duringInitialization) {
+        createTag: function(value, additionalClass, duringInitialization, index) {
             var that = this;
 
             value = $.trim(value);
@@ -495,7 +500,12 @@
             // Unless options.singleField is set, each tag has a hidden input field inline.
             if (!this.options.singleField) {
                 var escapedValue = label.html();
-                tag.append('<input type="hidden" value="' + escapedValue + '" name="' + this.options.fieldName + '" class="tagit-hidden-field" />');
+                var html = '<input type="hidden" value="'+ escapedValue + '" name="' + this.options.fieldName.replace('{}', index);
+                if (typeof this.options.fieldId != 'undefined' && this.options.fieldId.length > 0) {
+                  html += '" id="' + this.options.fieldId.replace('{}', index);
+                }
+                html += '" class="tagit-hidden-field" />';
+                tag.append(html);
             }
 
             if (this._trigger('beforeTagAdded', null, {
